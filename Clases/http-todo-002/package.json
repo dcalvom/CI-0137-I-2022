@@ -1,0 +1,22 @@
+{
+  "name": "http-todo",
+  "version": "1.0.0",
+  "description": "Pequeño servidor http para una app de todo",
+  "main": "index.js",
+  "scripts": {
+    "test": "test.js",
+    "iniciar": "nodemon index.js"
+  },
+  "keywords": [
+    "http",
+    "server",
+    "node",
+    "todo",
+    "ci0137"
+  ],
+  "author": "Daniel Calvo",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.3"
+  }
+}

@@ -1,0 +1,45 @@
+body {
+    font-family: 'Roboto', sans-serif; 
+}
+
+.main {
+    padding-top: 10vh;
+}
+
+.container {
+    display:flex;
+    width:100%;
+    justify-content:center;
+    flex-wrap: wrap;
+}
+
+h1 {
+    font-size: 40px;
+    font-weight: bold;
+}
+
+input {
+    height: 40px;
+    width: 300px;
+    border-radius: 10px;
+    border: 1px solid gray;
+    margin-bottom: 20px;
+    font-size: 18px;
+    padding-left: 15px;
+}
+
+button {
+    height: 40px;
+    width: 317px;
+    border-radius: 10px;
+    border: none;
+    background-color: #039be5;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+button:hover {
+    background-color: red;
+}

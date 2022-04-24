@@ -1,0 +1,21 @@
+{
+  "name": "http-todo-002",
+  "version": "1.0.0",
+  "description": "Servidor HTTP de ejemplo para CI0137",
+  "main": "index.js",
+  "scripts": {
+    "test": "test.js",
+    "iniciar": "nodemon index.js"
+  },
+  "keywords": [
+    "http",
+    "server",
+    "ci0137",
+    "demo"
+  ],
+  "author": "Daniel Calvo",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.3"
+  }
+}
