@@ -8,11 +8,12 @@
         <link rel="stylesheet" href="styles.css" />
         <link href="http://fonts.cdnfonts.com/css/roboto" rel="stylesheet" />
         <!--ESTO ES UN COMENTARIO-->
+        <script type="application/javascript" src="script.js"></script>
     </head>
     <body>
         <div class="main container">
             <div class="container">
-                <h1>Bienvenido</h1>
+                <h1 id="title">Bienvenido</h1>
             </div>
             <form>
                 <div class="container">
@@ -21,8 +22,13 @@
                 <div class="container">
                     <input type="password" id="contrasenia" name="contrasenia" value="" placeholder="Ingrese su contraseña" />
                 </div>
+                <div class="container alert">
+                    <p id="alerta" class="hide">
+                        Usuario o contraseña inválidos.
+                    </p>
+                </div>
                 <div class="container">
-                    <button type="submit">
+                    <button onclick="return validUsuario();" type="submit">
                         Enviar
                     </button>
                 </div>

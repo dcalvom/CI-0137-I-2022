@@ -53,3 +53,12 @@ button {
     text-align: center; 
     font-size: 18px;
  }
+
+ .alert {
+     text-align: center;
+     color: red;
+ }
+
+ .hide {
+     display: none;
+ }
