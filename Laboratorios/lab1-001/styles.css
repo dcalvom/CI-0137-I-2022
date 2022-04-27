@@ -43,3 +43,11 @@ button {
 button:hover {
     background-color: red;
 }
+
+.alert {
+    color: red;
+}
+
+.hide {
+    display: none;
+}

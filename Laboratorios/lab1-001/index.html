@@ -1,39 +1,37 @@
 <!doctype html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>Laboratorio 001</title>
-        <link rel="icon" type="image/x-icon" href="favicon.ico" />
-        <link rel="stylesheet" href="styles.css" />
-        <link href="http://fonts.cdnfonts.com/css/roboto" rel="stylesheet">
-        <!--ESTO ES UN COMENTARIO-->
-    </head>
-    <body>
-        <div class="main container">
+
+<head>
+    <meta charset="utf-8">
+    <title>Laboratorio 001</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="stylesheet" href="styles.css" />
+    <link href="http://fonts.cdnfonts.com/css/roboto" rel="stylesheet">
+    <!--ESTO ES UN COMENTARIO-->
+    <script type="application/javascript" src="script.js"></script>
+</head>
+
+<body>
+    <div class="main container">
+        <div class="container">
+            <h1 id="title"></h1>
+        </div>
+        <div id="form" class="container">
             <div class="container">
-                <h1>Bienvenido</h1>
+                <input type="text" id="usuario" name="usuario" value="" placeholder="Ingrese su usuario" />
             </div>
             <div class="container">
-                <input
-                    type="text"
-                    id="usuario"
-                    name="usuario"
-                    value=""
-                    placeholder="Ingrese su usuario"
-                />
+                <input type="password" id="contrasenia" name="contrasenia" value=""
+                    placeholder="Ingrese su contraseña" />
             </div>
             <div class="container">
-                <input
-                    type="password"
-                    id="contrasenia"
-                    name="contrasenia"
-                    value=""
-                    placeholder="Ingrese su contraseña"
-                />
+                <p id="alerta" class="alert hide">Usuario o contraseña inválidos</p>
             </div>
             <div class="container">
-                <button type="submit">Ingresar</button>
+                <button onclick="validarUsuario();" type="submit">Ingresar</button>
             </div>
         </div>
-    </body>
+    </div>
+</body>
+
 </html>
