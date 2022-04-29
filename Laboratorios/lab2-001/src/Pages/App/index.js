@@ -1,7 +1,14 @@
+import { Route, Routes } from "react-router-dom";
+import Home from "../Home";
+import Login from "../Login";
+import Register from "../Register";
+
 export default function App() {
   return (
-    <h1 className="text-3xl font-bold underline">
-      Hello world!
-    </h1>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="login" element={<Login />} />
+      <Route path="register" element={<Register />} />
+    </Routes>
   )
 }
