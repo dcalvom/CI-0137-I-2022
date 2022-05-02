@@ -1,10 +1,7 @@
-const DEFAULT_WIDTH = 20;
-const DEFAULT_HEIGHT = 20;
-
 function Logo({ width, height }) {
   return (
     <img
-      className={`w-${width || DEFAULT_WIDTH} h-${height || DEFAULT_HEIGHT}`}
+      className={`${width || "w-20"} ${height || "h-20"}`}
       alt="Logo"
       src="https://bit.ly/logo-ci0137"
     />

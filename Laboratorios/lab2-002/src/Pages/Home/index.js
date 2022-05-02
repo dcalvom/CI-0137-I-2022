@@ -33,12 +33,12 @@ const products = [
 
 function Home() {
   return (
-    <>
+    <div>
       <Header />
       <div className="flex gap-4 px-4 md:px-8 lg:px-20 py-4">
         {products.map((p) => {
           return (
-            <div className="border border-neutral-400">
+            <div key={`product_${p.id}`} className="border border-neutral-400">
               <div>
                 <img src={p.image} alt={p.name} />
               </div>
@@ -50,7 +50,7 @@ function Home() {
           );
         })}
       </div>
-    </>
+    </div>
   );
 }
 
