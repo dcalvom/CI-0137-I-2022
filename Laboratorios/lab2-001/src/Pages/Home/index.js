@@ -24,7 +24,7 @@ const items = [
     name: "Touch of Class Oliviana Covered Box Ivory/Gold",
     photo: "https://m.media-amazon.com/images/I/91zfO1P-NdL._AC_UL320_.jpg",
     location: "San José"
-  }
+  },
 ]
 
 export default function Home() {
