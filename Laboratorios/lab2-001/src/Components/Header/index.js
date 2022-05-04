@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { MdPermIdentity } from "react-icons/md";
+import { ThemeContext } from "../../Pages/App";
 
 export default function Header() {
 
     const [showUserMenu, setShowUserMenu] = useState(false);
+    const theme = useContext(ThemeContext);
 
     return (
-        <div className="flex h-16 w-full bg-slate-300 sm:px-4 md:px-8 lg:px-16">
+        <div className={`flex h-16 w-full bg-${theme.header} sm:px-4 md:px-8 lg:px-16`}>
             <div className="w-6/12">
                 <img className="h-16 w-16" src="https://rb.gy/3ueukh" alt="Logo Swap it" />
             </div>
