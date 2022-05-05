@@ -1,22 +1,24 @@
-import { useEffect, useState } from "react";
-import { BiCart, BiSearch } from "react-icons/bi";
+import { useState } from "react";
+import { BiCart, BiSearch, BiMoon } from "react-icons/bi";
+import { useSelector, useDispatch } from "react-redux";
 import Logo from "../Logo";
 import Modal from "../Modal";
+import { toLight, toDark } from "../../Slices/appSlice";
 
 function Header() {
   const [showSearch, setShowSearch] = useState(false);
-  const [promo, setPromo] = useState(null);
+  
+  const dispatch = useDispatch();
 
-  //DE ALGUNA MANERA NECESITAMOS TRAER EL DATO DEL BACKEND
-  useEffect(() => {
-    const fetchPromo = async () => {
-      const promoFetch = await fetch("https://api.ticolitas.com/alertas");
-      const promoBody = await promoFetch.json();
-      setPromo(promoBody[0].alerta);
-    }
-
-    fetchPromo();
-  }, []);
+  const theme = useSelector(
+    (state) => state.app.theme
+  );
+  const promo = useSelector(
+    (state) => state.app.promo
+  );
+  const countOfItems = useSelector(
+    (state) => state.cart.countOfItems
+  );
 
   return (
     <>
@@ -39,7 +41,9 @@ function Header() {
           </div>
         </Modal>
       )}
-      <div className="flex items-center justify-center bg-purple-600 text-white h-16 w-full">
+      <div
+        className={`flex items-center justify-center ${theme.header} text-white h-16 w-full`}
+      >
         <p>{promo || "¡Tienda Amigurumis!"}</p>
       </div>
       <div className="flex px-4 md:px-8 lg:px-20 py-4">
@@ -55,6 +59,13 @@ function Header() {
             className="cursor-pointer text-2xl"
           />
           <BiCart className="cursor-pointer text-2xl" />
+          <span>{countOfItems}</span>
+          <BiMoon
+            onClick={() => {
+              theme.name === "light" ? dispatch(toDark()) : dispatch(toLight());
+            }}
+            className="cursor-pointer text-2xl"
+          />
         </div>
       </div>
     </>
