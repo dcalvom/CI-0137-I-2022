@@ -1,14 +1,10 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Button from "../../Components/Button";
 import Header from "../../Components/Header";
-import { ThemeContext } from "../App";
 
 export default function Home() {
   const [items, setItems] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  const theme = useContext(ThemeContext);
 
   //ESTE EFECTO SECUNDARIO, VA A CARGAR TODOS MIS PRODUCTOS DESDE LA BD AL INICIAR LA PAGINA
   useEffect(() => {
@@ -26,9 +22,8 @@ export default function Home() {
     loading ? <div className="fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]">
       <div className="w-16 h-16 border-b-2 border-gray-900 rounded-full animate-spin"></div>
     </div> : (
-      <div className={`bg-${theme.background} text-${theme.text}`}>
-        <Header />
-        <Button />
+      <div>
+        <Header welcomeText="¡Hola!" />
         <div className="flex gap-8 sm:px-4 md:px-8 lg:px-16 mt-8">
           {
             items && items.productos.map((i) => {
@@ -40,7 +35,7 @@ export default function Home() {
                     </div>
                     <div className="w-full text-center pt-4">
                       <p className="font-bold">{i.nombreTienda}</p>
-                      <p className="text-sm text-slate-700">{i.marca}</p>
+                      <p  className="text-sm">{i.marca}</p>
                     </div>
                   </div>
                 </Link>

@@ -1,13 +1,17 @@
 const themes = {
   light: {
-    background: "white",
-    text: "black",
-    header: "slate-300",
+    background: "bg-white",
+    text: "text-black",
+    header: "bg-slate-300",
+    inputBg: "bg-slate-300",
+    inputText: "text-black",
   },
   dark: {
-    background: "black",
-    text: "white",
-    header: "slate-900"
+    background: "bg-black",
+    text: "text-white",
+    header: "bg-slate-900",
+    inputBg: "bg-slate-900",
+    inputText: "text-white",
   },
 };
 
