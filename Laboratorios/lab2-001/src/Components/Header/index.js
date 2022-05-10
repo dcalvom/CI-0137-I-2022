@@ -8,7 +8,7 @@ export default function Header({
     welcomeText,
 }) {
 
-    const [showUserMenu, setShowUserMenu] = useState(false);
+    const [showUserMenu, setShowUserMenu] = useState(true);
     const theme = useSelector(
         (state) => state.app.theme
     );
@@ -28,9 +28,9 @@ export default function Header({
                 <MdNightlightRound onClick={() => { dispatch(switchTheme()); }} className="h-8 w-8 cursor-pointer" />
                 {
                     showUserMenu && (
-                        <div>
+                        <>
                             <div onClick={() => { setShowUserMenu(false); }} className="fixed top-0 left-0 h-full w-full"></div>
-                            <div className="bg-slate-700 pb-2 fixed right-8 top-16 h-auto w-[200px]">
+                            <div className="bg-slate-700 pb-2 fixed right-24 top-16 h-auto w-[200px]">
                                 {
                                     userState.userIsLoggedIn ? (
                                         <>
@@ -66,7 +66,7 @@ export default function Header({
                                     </p>
                                 </div>
                             </div>
-                        </div>
+                        </>
                     )
                 }
             </div>
