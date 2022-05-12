@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { BiCart, BiSearch, BiMoon } from "react-icons/bi";
+import { BiCart, BiSearch, BiMoon, BiUser } from "react-icons/bi";
 import { useSelector, useDispatch } from "react-redux";
 import Logo from "../Logo";
 import Modal from "../Modal";
 import { toLight, toDark } from "../../Slices/appSlice";
+import { Link } from "react-router-dom";
 
 function Header() {
   const [showSearch, setShowSearch] = useState(false);
@@ -18,6 +19,9 @@ function Header() {
   );
   const countOfItems = useSelector(
     (state) => state.cart.countOfItems
+  );
+  const user = useSelector(
+    (state) => state.user.user
   );
 
   return (
@@ -51,13 +55,16 @@ function Header() {
           <Logo width="w-20" height="h-20" />
         </div>
         <div className="w-1/2 flex gap-3 items-center justify-end">
-          <p>¡Bienvenido!</p>
+          <p>{user && user.nombre ? ` ¡Bienvenido ${user.nombre}!` : "¡Bienvenido!"}</p>
           <BiSearch
             onClick={() => {
               setShowSearch(true);
             }}
             className="cursor-pointer text-2xl"
           />
+          <Link to="/admin">
+            <BiUser className="cursor-pointer text-2xl" />
+          </Link>
           <BiCart className="cursor-pointer text-2xl" />
           <span>{countOfItems}</span>
           <BiMoon

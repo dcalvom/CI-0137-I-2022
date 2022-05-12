@@ -41,6 +41,11 @@ export default function Header({
                                             </div>
                                             <div className="pt-2 pl-4">
                                                 <p className="text-white cursor-pointer">
+                                                    <Link to="/admin">Administración</Link>
+                                                </p>
+                                            </div>
+                                            <div className="pt-2 pl-4">
+                                                <p className="text-white cursor-pointer">
                                                     <Link to="/logout">Cerrar Sesión</Link>
                                                 </p>
                                             </div>
@@ -55,6 +60,11 @@ export default function Header({
                                             <div className="pt-2 pl-4">
                                                 <p className="text-white cursor-pointer">
                                                     <Link to="/register">Crear cuenta</Link>
+                                                </p>
+                                            </div>
+                                            <div className="pt-2 pl-4">
+                                                <p className="text-white cursor-pointer">
+                                                    <Link to="/admin">Administración</Link>
                                                 </p>
                                             </div>
                                         </>
