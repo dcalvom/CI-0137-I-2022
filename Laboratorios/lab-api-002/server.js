@@ -39,7 +39,7 @@ const swaggerOptions = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Polpo Boilerplate API",
+      title: "Boilerplate API",
       version: "2.1.0",
     },
   },

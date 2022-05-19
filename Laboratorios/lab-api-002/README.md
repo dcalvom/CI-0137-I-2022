@@ -1,6 +1,6 @@
-# API Boilerplate de Polpo
+# API Boilerplate
 
-En este boilerplate encontrarás todo lo necesario para montar una API con las tecnologías que se han estado utilizando en **Polpo**.
+En este boilerplate encontrarás todo lo necesario para montar una API.
 
 Siguiendo la arquitectura MVC (Modelo - Vista - Controlador) creemos que se puede montar una API escalable y robusta.
 

@@ -1,7 +1,7 @@
 {
-  "name": "polpo-api",
+  "name": "api",
   "version": "1.0.0",
-  "description": "API boilerplate for Polpo",
+  "description": "API boilerplate",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -38,12 +38,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/polpocr/api-boilerplate.git"
+    "url": "git+hhttps://github.com/dcalvom/CI-0137-I-2022.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/polpocr/api-boilerplate/issues"
+    "url": "https://github.com/dcalvom/CI-0137-I-2022/issues"
   },
-  "homepage": "https://github.com/polpocr/api-boilerplate#readme"
+  "homepage": "https://github.com/dcalvom/CI-0137-I-2022#readme"
 }
