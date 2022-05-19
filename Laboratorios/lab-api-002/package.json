@@ -1,0 +1,49 @@
+{
+  "name": "polpo-api",
+  "version": "1.0.0",
+  "description": "API boilerplate for Polpo",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "NODE_ENV=production node server",
+    "dev": "nodemon server"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.871.0",
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "handlebars": "^4.7.7",
+    "joi": "^17.4.0",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.1",
+    "multer": "^1.4.2",
+    "multiparty": "^4.2.2",
+    "mysql2": "^2.2.5",
+    "node-fetch": "^2.6.1",
+    "nodemailer": "^6.5.0",
+    "sequelize": "^6.5.0",
+    "swagger-jsdoc": "^6.1.0",
+    "swagger-ui-express": "^4.1.6"
+  },
+  "devDependencies": {
+    "colors": "^1.4.0",
+    "faker": "^5.4.0",
+    "jest": "^26.6.3",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.7",
+    "sequelize-cli": "^6.2.0",
+    "supertest": "^6.1.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/polpocr/api-boilerplate.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/polpocr/api-boilerplate/issues"
+  },
+  "homepage": "https://github.com/polpocr/api-boilerplate#readme"
+}
