@@ -1,0 +1,25 @@
+{
+  "name": "lab-api-001",
+  "version": "1.0.0",
+  "description": "Este es un backend de ejemplo",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "backend",
+    "ci0137",
+    "test"
+  ],
+  "author": "Daniel Calvo",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  }
+}

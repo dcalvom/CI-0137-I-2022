@@ -23,6 +23,7 @@ app.use(cors({}));
 
 // Route files
 const welcomeRoute = require("./routes/welcome");
+const usersRoute = require("./routes/users");
 
 // Body paser
 app.use(express.json({ limit: "20mb" }));
@@ -43,7 +44,7 @@ const swaggerOptions = {
       version: "2.1.0",
     },
   },
-  apis: ["./routes/welcome.js"],
+  apis: ["./routes/welcome.js", "./routes/users.js"],
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
@@ -51,6 +52,7 @@ app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
 // Mount routes
 app.use(welcomeRoute);
+app.use(usersRoute);
 
 // Middlewares
 app.use(errorHandler);
@@ -58,7 +60,7 @@ app.use(errorHandler);
 // Multer
 app.use(upload.any());
 
-const server = app.listen(process.env.PORT || 5000, () => {
+const server = app.listen(process.env.PORT || 8000, () => {
   console.log(
     `Server running in ${process.env.NODE_ENV} mode on port ${process.env.PORT}`
       .blue
