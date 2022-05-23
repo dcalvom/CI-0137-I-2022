@@ -1,75 +1,60 @@
-// Packages
 const express = require("express");
-const cors = require("cors");
 const dotenv = require("dotenv");
-const swaggerJsDoc = require("swagger-jsdoc");
-const swaggerUI = require("swagger-ui-express");
-const colors = require("colors");
+const mysql = require("mysql");
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
+dotenv.config();
+const server = express();
+server.use(express.json());
 
-const errorHandler = require("./middlewares/errorHandler");
-
-// Multer
-const multer = require("multer");
-const upload = multer();
-
-// Load env variables
-dotenv.config({ path: ".env" });
-
-// Initialize app
-const app = express();
-
-//Enable cors
-app.use(cors({}));
-
-// Route files
-const welcomeRoute = require("./routes/welcome");
-const usersRoute = require("./routes/users");
-
-// Body paser
-app.use(express.json({ limit: "20mb" }));
-
-// Development setup
-if (process.env.NODE_ENV == "development") {
-  const morgan = require("morgan");
-  app.use(morgan("dev"));
-}
-
-// Documentation setup
-
-const swaggerOptions = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "Boilerplate API",
-      version: "2.1.0",
-    },
-  },
-  apis: ["./routes/welcome.js", "./routes/users.js"],
-};
-
-const swaggerDocs = swaggerJsDoc(swaggerOptions);
-app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
-
-// Mount routes
-app.use(welcomeRoute);
-app.use(usersRoute);
-
-// Middlewares
-app.use(errorHandler);
-
-// Multer
-app.use(upload.any());
-
-const server = app.listen(process.env.PORT || 8000, () => {
-  console.log(
-    `Server running in ${process.env.NODE_ENV} mode on port ${process.env.PORT}`
-      .blue
-  );
+const con = mysql.createConnection({
+  host: process.env.MYSQL_HOST,
+  port: process.env.MYSQL_PORT,
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
 });
 
-// Handle unhandled promise rejections
-process.on("unhandledRejection", (err, promise) => {
-  console.log(`Error: ${err.message}`.red);
-  // Close server & exit process
-  server.close(() => process.exit(1));
+con.connect((err) => {
+  if (err) throw err;
+  console.log("Connected!");
 });
+
+server.get("/", (req, res) => {
+  res.send("Welcome nodemon");
+});
+
+server.post("/users", async (req, res) => {
+  const userPayload = req.body;
+  const sql = `
+        INSERT INTO test.Users (
+            name,
+            email,
+            password,
+            phone_country_code,
+            phone,
+            birth_date
+        )
+        VALUES(
+            '${userPayload.name}',
+            '${userPayload.email}',
+            '${await bcrypt.hash(userPayload.password, saltRounds)}',
+            ${userPayload.phoneCountryCode || "NULL"},
+            ${userPayload.phone || "NULL"},
+            ${userPayload.birthday ? `'${userPayload.birthday}'` : "NULL"});
+    `;
+    con.query(sql, (err, result) => {
+        if (err) {
+            res.statusCode(500).json({
+                message: "Ocurrió un error al insertar el usuario.",
+                error: err,
+            });
+            return;
+        };
+        res.json(result);
+    });
+});
+
+server.listen(process.env.PORT || 7500);
+console.log(
+  `The server is running at http://localhost:${process.env.PORT || 7500}`
+);
