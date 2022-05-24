@@ -45,12 +45,19 @@ server.post("/users", async (req, res) => {
 server.post("/users/login", (req, res) => {
   const userPayload = req.body;
   const sqlQuery = `SELECT * FROM test.Users WHERE email = '${userPayload.email}';`;
-  con.query(sqlQuery, function (err, result) {
-    if (err) res.status(500).send("Server error: " + err);
-    if (!result || bcrypt.compareSync(userPayload.password, result[0].password)) {
+  con.query(sqlQuery, async (err, result) => {
+    if (err) {
+      res.status(500).send("Server error: " + err);
+      return;
+    };
+    const passwordCheck = await bcrypt.compare(userPayload.password, result[0].password);
+    if (!result || !passwordCheck) {
       res.status(401).send("Invalid credentials");
+      return;
     }
-    res.json(result[0]);
+    const user = result[0];
+    delete user.password;
+    res.json(user);
   });
 });
 
