@@ -1,7 +1,9 @@
 const express = require("express");
 const dotenv = require("dotenv");
+const util = require('util');
 const mysql = require("mysql");
 const bcrypt = require("bcrypt");
+const nodemailer = require('nodemailer');
 const saltRounds = 10;
 
 dotenv.config();
@@ -19,6 +21,34 @@ con.connect(function (err) {
   if (err) throw err;
   console.log("Connected!");
 });
+
+const query = util.promisify(con.query).bind(con);
+
+const mailTransporter = nodemailer.createTransport({
+    host: process.env.EMAIL_HOST,
+    port: process.env.EMAIL_PORT,
+    secure: true,
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+});
+
+/**
+    mailTransporter.sendMail({
+      from: "ci0137@psgfanclubcr.com",
+      to: "------",
+      subject: "Message title",
+      text: "Plaintext version of the message",
+      html: "<p>HTML version of the message</p>"
+    }, function(error, info){
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
+ */
 
 server.get("/", (req, res) => {
   res.send("Welcome");
@@ -40,16 +70,14 @@ server.post("/users", async (req, res) => {
     if (err) throw err;
     res.json(result);
   });
+
 });
 
-server.post("/users/login", (req, res) => {
+server.post("/users/login", async (req, res) => {
   const userPayload = req.body;
   const sqlQuery = `SELECT * FROM test.Users WHERE email = '${userPayload.email}';`;
-  con.query(sqlQuery, async (err, result) => {
-    if (err) {
-      res.status(500).send("Server error: " + err);
-      return;
-    };
+  try {
+    const result = await query(sqlQuery);
     const passwordCheck = await bcrypt.compare(userPayload.password, result[0].password);
     if (!result || !passwordCheck) {
       res.status(401).send("Invalid credentials");
@@ -58,7 +86,75 @@ server.post("/users/login", (req, res) => {
     const user = result[0];
     delete user.password;
     res.json(user);
-  });
+  } catch (error) {
+    res.status(500).send("Server error: " + error);
+  }
+});
+
+server.post("/users/recover-password", async (req, res) => {
+  const userPayload = req.body;
+  const queryUserSQL = `SELECT id, email FROM test.Users WHERE email = '${userPayload.email}';`;
+  try {
+    const result = await query(queryUserSQL);
+    if (!result[0]) {
+      res.status(401).send("Datos no válidos");
+      return;
+    }
+    const user = result[0];
+    const randomToken = Math.floor((Math.random() * (999999 - 100000 + 1)) + 100000);
+    
+    const inertCodeSQL = `INSERT INTO test.Confirmation_Codes
+    (id_usuario, code)
+    VALUES(${user.id}, ${randomToken});`
+
+    await query(inertCodeSQL);
+
+    mailTransporter.sendMail({
+      from: "ci0137@psgfanclubcr.com",
+      to: user.email,
+      subject: "Su código de recuperación",
+      text: `Utilice este código para recuperar su contraseña: ${randomToken}`,
+      html: `Utilice este código para recuperar su contraseña: <strong>${randomToken}</strong>`
+    }, function(error, info){
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
+
+    res.statusCode(200);
+  } catch (error) {
+    res.status(500).send("Server error: " + error);
+  }
+});
+
+
+server.patch("/users/reset-password", async (req, res) => {
+  const userPayload = req.body;
+  const queryUserSQL = `SELECT u.id, cc.code
+  FROM Confirmation_Codes cc 
+    JOIN Users u 
+      ON cc.id_usuario = u.id
+  WHERE u.email = '${userPayload.email}';`;
+  try {
+    const result = await query(queryUserSQL);
+    if (!result[0] || result[0].code !== userPayload.code) {
+      res.status(401).send("Datos no válidos");
+      return;
+    }
+    const userCode = result[0];
+    
+    const updatePasswordSQL = `UPDATE test.Users
+    SET password='${userPayload.password}'
+    WHERE id=${userCode.id};`
+
+    await query(updatePasswordSQL);
+
+    res.statusCode(204);
+  } catch (error) {
+    res.status(500).send("Server error: " + error);
+  }
 });
 
 server.listen(process.env.PORT || 8000);
