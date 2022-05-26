@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const mysql = require("mysql");
+const util = require("util");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 dotenv.config();
@@ -19,39 +20,41 @@ con.connect((err) => {
   console.log("Connected!");
 });
 
+const query = util.promisify(con.query).bind(con);
+
 server.get("/", (req, res) => {
   res.send("Welcome nodemon");
 });
 
 server.post("/users", async (req, res) => {
-  const userPayload = req.body;
-  const sql = `
-        INSERT INTO test.Users (
-            name,
-            email,
-            password,
-            phone_country_code,
-            phone,
-            birth_date
-        )
-        VALUES(
-            '${userPayload.name}',
-            '${userPayload.email}',
-            '${await bcrypt.hash(userPayload.password, saltRounds)}',
-            ${userPayload.phoneCountryCode || "NULL"},
-            ${userPayload.phone || "NULL"},
-            ${userPayload.birthday ? `'${userPayload.birthday}'` : "NULL"});
-    `;
-    con.query(sql, (err, result) => {
-        if (err) {
-            res.statusCode(500).json({
-                message: "Ocurrió un error al insertar el usuario.",
-                error: err,
-            });
-            return;
-        };
-        res.json(result);
+  try {
+    const userPayload = req.body;
+    const sql = `
+            INSERT INTO test.Users (
+                name,
+                email,
+                password,
+                phone_country_code,
+                phone,
+                birth_date
+            )
+            VALUES(
+                '${userPayload.name}',
+                '${userPayload.email}',
+                '${await bcrypt.hash(userPayload.password, saltRounds)}',
+                ${userPayload.phoneCountryCode || "NULL"},
+                ${userPayload.phone || "NULL"},
+                ${userPayload.birthday ? `'${userPayload.birthday}'` : "NULL"});
+        `;
+    const result = await query(sql);
+    res.json(result);
+  } catch (error) {
+    res.statusCode(500).json({
+      message: "Ocurrió un error al insertar el usuario.",
+      error,
     });
+    return;
+  }
 });
 
 server.listen(process.env.PORT || 7500);
