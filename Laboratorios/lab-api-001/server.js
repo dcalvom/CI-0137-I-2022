@@ -9,10 +9,6 @@ connect();
 //Mount routes
 server.use("/users", usersRoutes);
 
-server.get("/", (req, res) => {
-  res.send("Welcome");
-});
-
 server.listen(process.env.PORT || 8000);
 console.log(
   `The server is listening on http://localhost:${process.env.PORT || 8000}`

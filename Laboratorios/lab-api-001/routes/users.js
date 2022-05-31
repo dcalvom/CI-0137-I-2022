@@ -1,4 +1,5 @@
 const express = require("express");
+const router = express.Router();
 const {
   createUser,
   loginUser,
@@ -7,14 +8,11 @@ const {
   listUsers,
 } = require("../controllers/users");
 const { checkUserIsAuthenticated, checkRoles } = require("../middlewares/auth");
-const router = express.Router();
-const { ROLES } = require("../utils/contants");
+const { ROLES } = require("../utils/constants");
 
-router
-  .route("/")
-  .get([checkUserIsAuthenticated, checkRoles([ROLES.ADMIN])], listUsers);
-
-router.route("/").post(createUser);
+router.route("/")
+  .get([checkUserIsAuthenticated, checkRoles([ROLES.ADMIN])], listUsers)
+  .post(createUser);
 
 router.route("/login").post(loginUser);
 

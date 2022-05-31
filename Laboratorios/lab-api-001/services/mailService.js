@@ -17,7 +17,7 @@ exports.sendRecoveryCodeEmail = async (
   userEmail,
   randomToken,
 ) => {
-  let transporter = getTransporter();
+  const transporter = getTransporter();
   await transporter.sendMail({
     from: "ci0137@psgfanclubcr.com",
     to: userEmail,
