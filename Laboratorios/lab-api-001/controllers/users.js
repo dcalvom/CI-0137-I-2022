@@ -1,15 +1,12 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { sendRecoveryCodeEmail } = require("../services/mailService");
-const getQuery = require("../services/databaseService").getQuery;
-
+const db = require("../models/index");
 const saltRounds = 10;
 
 exports.listUsers = async (req, res) => {
   try {
-    const query = getQuery();
-    const sqlQuerySelect = "SELECT id, name, email, phone_country_code, phone, birthday, created_at, updated_at FROM test.Users;";
-    const users = await query(sqlQuerySelect);
+    const users = await db.User.findAll();
     res.json(users);
   } catch (error) {
     console.log(error);

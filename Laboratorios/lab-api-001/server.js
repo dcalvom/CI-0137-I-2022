@@ -1,10 +1,10 @@
 const express = require("express");
+const dotenv = require("dotenv");
 const usersRoutes = require("./routes/users");
-const { connect } = require("./services/databaseService");
-
+dotenv.config();
 const server = express();
 server.use(express.json());
-connect();
+//connect();
 
 //Mount routes
 server.use("/users", usersRoutes);
