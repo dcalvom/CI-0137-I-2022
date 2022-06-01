@@ -11,7 +11,7 @@ const { checkUserIsAuthenticated, checkRoles } = require("../middlewares/auth");
 const { ROLES } = require("../utils/constants");
 
 router.route("/")
-  .get(listUsers)
+  .get([checkUserIsAuthenticated, checkRoles([ROLES.ADMIN])], listUsers)
   .post(createUser);
 
 router.route("/login").post(loginUser);
