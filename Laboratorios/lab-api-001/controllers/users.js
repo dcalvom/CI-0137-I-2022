@@ -11,66 +11,62 @@ exports.listUsers = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      message:
-        "Ocurrió un error al recuperar los usuarios.",
-      error
+      message: "Ocurrió un error al recuperar los usuarios.",
+      error,
     });
   }
 };
 
 exports.createUser = async (req, res) => {
   try {
-    const query = getQuery();
     const userPayload = req.body;
-    const sqlQuery = `
-          INSERT INTO test.Users
-          (name, email, password, phone_country_code, phone, birthday)
-          VALUES('${userPayload.name}',
-            '${userPayload.email}',
-            '${await bcrypt.hash(userPayload.password, saltRounds)}',
-            ${userPayload.countryCode || "NULL"},
-            ${userPayload.phone || "NULL"},
-            ${`'${userPayload.birthday}'` || "NULL"}
-          );`;
-    const result = await query(sqlQuery);
-    const sqlQuerySelect = `SELECT id, name, email, phone_country_code, phone, birthday, created_at, updated_at FROM test.Users WHERE id = ${result.insertId};`;
-    const user = await query(sqlQuerySelect);
-    res.json(user[0]);
+    const newUser = await db.User.create({
+      name: userPayload.name,
+      email: userPayload.email,
+      password: await bcrypt.hash(userPayload.password, saltRounds),
+      phoneCountryCode: userPayload.countryCode,
+      phone: userPayload.phone,
+      birthday: userPayload.birthday,
+    });
+    delete newUser.password;
+    res.json(newUser);
   } catch (error) {
     res.status(500).json({
       message:
         "Ocurrió un error al crear el usuario. Intente nuevamente. Si el error persiste, contacte al administrador del sistema.",
+      error,
     });
   }
 };
 
 exports.loginUser = async (req, res) => {
   try {
-    const query = getQuery();
     const userPayload = req.body;
-    const sqlQuery = `SELECT * FROM test.Users WHERE email = '${userPayload.email}';`;
-    const result = await query(sqlQuery);
+    const result = db.User.findOne({ where: { email : userPayload.email } });
     if (
-      !result[0] ||
-      !(await bcrypt.compare(userPayload.password, result[0].password))
+      !result ||
+      !(await bcrypt.compare(userPayload.password, result.password))
     ) {
       res.status(401).send("Invalid credentials");
       return;
     }
-    const user = result[0];
-
+    const user = result;
     const sqlQueryUserRoles = `SELECT * FROM test.Users_Roles WHERE id_usuario = '${user.id}';`;
     const roles = await query(sqlQueryUserRoles);
 
     const rolesIds = roles.map((r) => r.id_rol);
 
     delete user.password;
-    const token = jwt.sign({ userId: user.id, roles: rolesIds }, process.env.JWT_KEY, {
-      expiresIn: "10m"
-    });
+    const token = jwt.sign(
+      { userId: user.id, roles: rolesIds },
+      process.env.JWT_KEY,
+      {
+        expiresIn: "10m",
+      }
+    );
     res.json({
       ...user,
-      token
+      token,
     });
   } catch (error) {
     res.status(500).send("Server error: " + error);
