@@ -66,7 +66,9 @@ exports.loginUser = async (req, res) => {
     const resultRoles = await query(sqlQueryRoles);
     const rolesIds = resultRoles.map((r) => r.role_id);
 
-    const token = jwt.sign({ userId: user.id, roles: rolesIds }, process.env.JWT_KEY);
+    const token = jwt.sign({ userId: user.id, roles: rolesIds }, process.env.JWT_KEY, {
+      expiresIn: "5m"
+    });
     user.token = token;
     res.json(user);
   } catch (error) {
@@ -165,7 +167,7 @@ exports.resetPassword = async (req, res) => {
 exports.listUsers = async (req, res) => {
   try {
     const query = getQuery();
-    const sqlQuery = `SELECT * FROM test.Users;`;
+    const sqlQuery = `SELECT id, name, email, phone_country_code, phone, birth_date, created_at, updated_at FROM test.Users;`;
     const result = await query(sqlQuery);
     res.json(result);
   } catch (error) {
