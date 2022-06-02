@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-const { getQuery } = require("../services/dbService");
 
 exports.userIsAuthenticated = async (req, res, next) => {
     if (req.headers && req.headers.authorization) {

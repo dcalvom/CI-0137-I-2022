@@ -1,10 +1,8 @@
 const express = require("express");
 const usersRoutes = require("./routes/users");
-const { connectDB } = require("./services/dbService");
 
 const server = express();
 server.use(express.json());
-connectDB();
 
 //Mount routes
 server.use("/users", usersRoutes);

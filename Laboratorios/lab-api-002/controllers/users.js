@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const { getQuery } = require("../services/dbService");
 const { sendRecoveryCodeEmail } = require("../services/mailService");
+const db = require("../models/index");
 
 const saltRounds = 10;
 
@@ -166,9 +166,7 @@ exports.resetPassword = async (req, res) => {
 
 exports.listUsers = async (req, res) => {
   try {
-    const query = getQuery();
-    const sqlQuery = `SELECT id, name, email, phone_country_code, phone, birth_date, created_at, updated_at FROM test.Users;`;
-    const result = await query(sqlQuery);
+    const result = await db.User.find();
     res.json(result);
   } catch (error) {
     res.status(500).send("Server error: " + error);
