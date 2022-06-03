@@ -3,7 +3,16 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
-        
+      User.belongsToMany(models.Role, {
+        through: models.UserRole,
+        foreignKey: "userId",
+        as: "roles",
+      });
+
+      User.hasOne(models.UserRecoveryCode, {
+        foreignKey: "userId",
+        as: "recoveryCode",
+      });
     }
   }
   User.init(
@@ -21,6 +30,9 @@ module.exports = (sequelize, DataTypes) => {
       email: {
         type: DataTypes.STRING,
         allowNull: false,
+        validate: {
+          isEmail: true,
+        },
         unique: true,
       },
       password: {

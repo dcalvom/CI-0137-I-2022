@@ -7,35 +7,16 @@ const saltRounds = 10;
 
 exports.createUser = async (req, res) => {
   try {
-    const query = getQuery();
     const userPayload = req.body;
-    const sql = `
-                INSERT INTO test.Users (
-                    name,
-                    email,
-                    password,
-                    phone_country_code,
-                    phone,
-                    birth_date
-                )
-                VALUES(
-                    '${userPayload.name}',
-                    '${userPayload.email}',
-                    '${await bcrypt.hash(userPayload.password, saltRounds)}',
-                    ${userPayload.phoneCountryCode || "NULL"},
-                    ${userPayload.phone || "NULL"},
-                    ${
-                      userPayload.birthday
-                        ? `'${userPayload.birthday}'`
-                        : "NULL"
-                    });
-            `;
-    const result = await query(sql);
-    delete userPayload.password;
-    res.json({
-      id: result.insertId,
-      ...userPayload,
+    const newUser = await db.User.create({
+      name: userPayload.name,
+      email: userPayload.email,
+      password: await bcrypt.hash(userPayload.password, saltRounds),
+      phoneCountryCode: userPayload.phoneCountryCode,
+      phone: userPayload.phone,
+      birthdate: new Date(userPayload.birthdate),
     });
+    res.json(newUser);
   } catch (error) {
     res.status(500).json({
       message: "Ocurrió un error al insertar el usuario.",
@@ -47,30 +28,29 @@ exports.createUser = async (req, res) => {
 
 exports.loginUser = async (req, res) => {
   try {
-    const query = getQuery();
     const userPayload = req.body;
-    const sqlQuery = `SELECT * FROM test.Users WHERE email = '${userPayload.email}';`;
-    const result = await query(sqlQuery);
-    const passwordCheck = await bcrypt.compare(
-      userPayload.password,
-      result[0].password
-    );
-    if (!result[0] || !passwordCheck) {
+    const user = await db.User.findOne({
+      where: { email: userPayload.email },
+    });
+    if (!user || !(await bcrypt.compare(userPayload.password, user.password))) {
       res.status(401).send("Invalid credentials");
       return;
     }
-    const user = result[0];
-    delete user.password;
+    const roles = await db.UserRole.findAll({ where: { userId: user.id } });
+    const rolesIds = roles.map((r) => r.id);
 
-    const sqlQueryRoles = `SELECT * FROM test.Users_Roles WHERE user_id = '${user.id}';`;
-    const resultRoles = await query(sqlQueryRoles);
-    const rolesIds = resultRoles.map((r) => r.role_id);
-
-    const token = jwt.sign({ userId: user.id, roles: rolesIds }, process.env.JWT_KEY, {
-      expiresIn: "5m"
-    });
-    user.token = token;
-    res.json(user);
+    const token = jwt.sign(
+      { userId: user.id, roles: rolesIds },
+      process.env.JWT_KEY,
+      {
+        expiresIn: "5m",
+      }
+    );
+    const result = {
+      ...user.toJSON(),
+      token,
+    };
+    res.json(result);
   } catch (error) {
     res.status(500).send("Server error: " + error);
   }
@@ -78,38 +58,34 @@ exports.loginUser = async (req, res) => {
 
 exports.recoverPassword = async (req, res) => {
   try {
-    const query = getQuery();
     const userPayload = req.body;
-    const queryUserSQL = `SELECT id, email FROM test.Users WHERE email = '${userPayload.email}';`;
-    const result = await query(queryUserSQL);
-    if (!result[0]) {
+    const user = await db.User.findOne({
+      where: { email: userPayload.email },
+    });
+    if (!user) {
       res.status(401).send("Datos no válidos");
       return;
     }
-    const user = result[0];
     const randomToken = Math.floor(
       Math.random() * (999999 - 100000 + 1) + 100000
     );
 
-    const deleteCodeSQL = `DELETE FROM test.Users_Recovery_Codes WHERE user_id=${user.id};`;
-    await query(deleteCodeSQL);
+    await db.UserRecoveryCode.destroy({
+      where: {
+        userId: user.id,
+      },
+    });
 
     const nowDate = new Date();
     const expirationDate = new Date(
       nowDate.setMinutes(nowDate.getMinutes() + 15)
     ).toISOString();
 
-    console.log(
-      expirationDate.replace("T", " ").substring(0, expirationDate.indexOf("."))
-    );
-
-    const inertCodeSQL = `INSERT INTO test.Users_Recovery_Codes
-        (user_id, code, expiration_date)
-        VALUES(${user.id}, ${randomToken}, '${expirationDate
-      .replace("T", " ")
-      .substring(0, expirationDate.indexOf("."))}');`;
-
-    await query(inertCodeSQL);
+    await db.UserRecoveryCode.create({
+      userId: user.id,
+      code: randomToken,
+      expirationDate,
+    });
 
     await sendRecoveryCodeEmail(user.email, randomToken);
 
@@ -121,15 +97,17 @@ exports.recoverPassword = async (req, res) => {
 
 exports.resetPassword = async (req, res) => {
   try {
-    const query = getQuery();
     const userPayload = req.body;
-    const queryUserSQL = `SELECT u.id, urc.code, urc.expiration_date
-        FROM Users_Recovery_Codes urc 
-          JOIN Users u 
-            ON urc.user_id = u.id
-        WHERE u.email = '${userPayload.email}';`;
-    const result = await query(queryUserSQL);
-    if (!result[0] || result[0].code !== userPayload.code) {
+    const user = await db.User.findOne({
+      where: { email: userPayload.email },
+      include: ["recoveryCode"],
+    });
+    console.log("user: ", user.toJSON());
+    if (
+      !user ||
+      !user.recoveryCode ||
+      user.recoveryCode.code !== userPayload.code
+    ) {
       res.status(401).send("Datos no válidos");
       return;
     }
