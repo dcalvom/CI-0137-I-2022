@@ -7,15 +7,17 @@ module.exports = (sequelize, DataTypes) => {
     }
     UserRole.init(
       {
-        id_usuario: {
+        idUsuario: {
           type: DataTypes.INTEGER,
           allowNull: false,
           primaryKey: true,
+          field: "id_usuario",
         },
-        id_rol: {
+        idRol: {
           type: DataTypes.INTEGER,
           allowNull: false,
           primaryKey: true,
+          field: "id_rol",
         },
         createdAt: {
           type: DataTypes.DATE,

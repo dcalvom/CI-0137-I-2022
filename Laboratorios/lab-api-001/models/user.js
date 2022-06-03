@@ -5,12 +5,12 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       User.belongsToMany(models.Role, {
         through: models.UserRole,
-        foreignKey: "userId",
+        foreignKey: "idUsuario",
         as: "roles",
       });
 
       User.hasOne(models.ConfirmationCode, {
-        foreignKey: "userId",
+        foreignKey: "idUsuario",
         as: "confirmationCode",
       });
     }

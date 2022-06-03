@@ -42,7 +42,7 @@ exports.createUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
   try {
     const userPayload = req.body;
-    const user = db.User.findOne({ where: { email : userPayload.email } });
+    const user = await db.User.findOne({ where: { email : userPayload.email } });
     if (
       !user ||
       !(await bcrypt.compare(userPayload.password, user.password))
@@ -50,12 +50,8 @@ exports.loginUser = async (req, res) => {
       res.status(401).send("Invalid credentials");
       return;
     }
-    const sqlQueryUserRoles = `SELECT * FROM test.Users_Roles WHERE id_usuario = '${user.id}';`;
-    const roles = await query(sqlQueryUserRoles);
-
-    const rolesIds = roles.map((r) => r.id_rol);
-
-    delete user.password;
+    const roles = await db.UserRole.findAll({ where: { idUsuario: user.id } });
+    const rolesIds = roles.map((r) => r.idRol);
     const token = jwt.sign(
       { userId: user.id, roles: rolesIds },
       process.env.JWT_KEY,
@@ -64,7 +60,7 @@ exports.loginUser = async (req, res) => {
       }
     );
     res.json({
-      ...user,
+      ...user.toJSON(),
       token,
     });
   } catch (error) {
