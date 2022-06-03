@@ -1,15 +1,21 @@
 const fs = require("fs");
+const dotenv = require('dotenv');
 const path = require("path");
 const Sequelize = require("sequelize");
-const config = require("../config/config");
 const basename = path.basename(__filename);
 const db = {};
 
+dotenv.config();
+
 const sequelize = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
-  config
+  process.env.MYSQL_DATABASE,
+  process.env.MYSQL_USER,
+  process.env.MYSQL_PASSWORD,
+  {
+    host: process.env.MYSQL_HOST,
+    port: process.env.MYSQL_PORT,
+    dialect: "mysql",
+  }
 );
 
 fs.readdirSync(__dirname)

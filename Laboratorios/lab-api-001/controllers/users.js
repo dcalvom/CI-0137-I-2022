@@ -42,15 +42,14 @@ exports.createUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
   try {
     const userPayload = req.body;
-    const result = db.User.findOne({ where: { email : userPayload.email } });
+    const user = db.User.findOne({ where: { email : userPayload.email } });
     if (
-      !result ||
-      !(await bcrypt.compare(userPayload.password, result.password))
+      !user ||
+      !(await bcrypt.compare(userPayload.password, user.password))
     ) {
       res.status(401).send("Invalid credentials");
       return;
     }
-    const user = result;
     const sqlQueryUserRoles = `SELECT * FROM test.Users_Roles WHERE id_usuario = '${user.id}';`;
     const roles = await query(sqlQueryUserRoles);
 
