@@ -28,7 +28,6 @@ exports.createUser = async (req, res) => {
       phone: userPayload.phone,
       birthday: userPayload.birthday,
     });
-    delete newUser.password;
     res.json(newUser);
   } catch (error) {
     res.status(500).json({
@@ -70,27 +69,26 @@ exports.loginUser = async (req, res) => {
 
 exports.recoverPassword = async (req, res) => {
   try {
-    const query = getQuery();
     const userPayload = req.body;
-    const queryUserSQL = `SELECT id, email FROM test.Users WHERE email = '${userPayload.email}';`;
-    const result = await query(queryUserSQL);
-    if (!result[0]) {
+    const user = await db.User.findOne({ where: { email : userPayload.email } });
+    if (!user) {
       res.status(401).send("Datos no válidos");
       return;
     }
-    const user = result[0];
     const randomToken = Math.floor(
       Math.random() * (999999 - 100000 + 1) + 100000
     );
 
-    const deleteCodeSQL = `DELETE test.Confirmation_Codes WHERE id=${userCode.id};`;
-    await query(deleteCodeSQL);
+    await db.ConfirmationCode.destroy({
+      where: {
+        idUsuario: user.id,
+      },
+    });
 
-    const inertCodeSQL = `INSERT INTO test.Confirmation_Codes
-        (id_usuario, code)
-        VALUES(${user.id}, ${randomToken});`;
-
-    await query(inertCodeSQL);
+    await db.ConfirmationCode.create({
+      idUsuario: user.id,
+      code: randomToken,
+    });
 
     await sendRecoveryCodeEmail(user.email, randomToken);
 
@@ -102,27 +100,25 @@ exports.recoverPassword = async (req, res) => {
 
 exports.resetPassword = async (req, res) => {
   try {
-    const query = getQuery();
     const userPayload = req.body;
-    const queryUserSQL = `SELECT u.id, cc.code
-        FROM Confirmation_Codes cc 
-          JOIN Users u 
-            ON cc.id_usuario = u.id
-        WHERE u.email = '${userPayload.email}';`;
-    const result = await query(queryUserSQL);
-    if (!result[0] || result[0].code !== userPayload.code) {
+    const user = await db.User.findOne({
+      where: { email: userPayload.email },
+      include: "confirmationCode",
+    });
+
+    if (!user || !user.confirmationCode || user.confirmationCode.code !== userPayload.code) {
       res.status(401).send("Datos no válidos");
       return;
     }
-    const userCode = result[0];
 
-    const updatePasswordSQL = `UPDATE test.Users
-        SET password='${await bcrypt.hash(userPayload.password, saltRounds)}'
-        WHERE id=${userCode.id};`;
-    await query(updatePasswordSQL);
+    user.password = await bcrypt.hash(userPayload.password, saltRounds);
+    await user.save();
 
-    const deleteCodeSQL = `DELETE FROM test.Confirmation_Codes WHERE id_usuario=${userCode.id};`;
-    await query(deleteCodeSQL);
+    await db.ConfirmationCode.destroy({
+      where: {
+        idUsuario: user.id,
+      },
+    });
 
     res.status(204).send();
   } catch (error) {
