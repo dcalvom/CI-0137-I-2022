@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const db = require("../models/index");
 
 exports.userIsAuthenticated = async (req, res, next) => {
     if (req.headers && req.headers.authorization) {
@@ -6,10 +7,8 @@ exports.userIsAuthenticated = async (req, res, next) => {
         if (token) {
             try {
                 const decryptedToken = jwt.verify(token, process.env.JWT_KEY);
-                const sqlQuery = `SELECT * FROM test.Users WHERE id = '${decryptedToken.userId}';`;
-                const query = getQuery();
-                const result = await query(sqlQuery);
-                if (!result || !result[0]) {
+                const user = db.User.findByPk(decryptedToken.userId);
+                if (!user) {
                     res.status(401).json({
                         error: true,
                         message: "Las credenciales brindadas no son válidas."

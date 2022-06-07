@@ -6,6 +6,12 @@ const db = require("../models/index");
 const saltRounds = 10;
 
 exports.createUser = async (req, res) => {
+  // #swagger.tags = ['Users']
+  /*  #swagger.parameters['obj'] = {
+          in: 'body',
+          description: 'Add a user',
+          schema: { $ref: '#/definitions/AddUser' }
+  } */
   try {
     const userPayload = req.body;
     const newUser = await db.User.create({
@@ -27,6 +33,7 @@ exports.createUser = async (req, res) => {
 };
 
 exports.loginUser = async (req, res) => {
+  // #swagger.tags = ['Users']
   try {
     const userPayload = req.body;
     const user = await db.User.findOne({
@@ -37,7 +44,7 @@ exports.loginUser = async (req, res) => {
       return;
     }
     const roles = await db.UserRole.findAll({ where: { userId: user.id } });
-    const rolesIds = roles.map((r) => r.id);
+    const rolesIds = roles.map((r) => r.roleId);
 
     const token = jwt.sign(
       { userId: user.id, roles: rolesIds },
@@ -57,6 +64,7 @@ exports.loginUser = async (req, res) => {
 };
 
 exports.recoverPassword = async (req, res) => {
+  // #swagger.tags = ['Users']
   try {
     const userPayload = req.body;
     const user = await db.User.findOne({
@@ -96,13 +104,14 @@ exports.recoverPassword = async (req, res) => {
 };
 
 exports.resetPassword = async (req, res) => {
+  // #swagger.tags = ['Users']
   try {
     const userPayload = req.body;
+
     const user = await db.User.findOne({
       where: { email: userPayload.email },
       include: ["recoveryCode"],
     });
-    console.log("user: ", user.toJSON());
     if (
       !user ||
       !user.recoveryCode ||
@@ -111,13 +120,8 @@ exports.resetPassword = async (req, res) => {
       res.status(401).send("Datos no válidos");
       return;
     }
-    const parsedExpirationDate = new Date(
-      new Date(result[0].expiration_date).setHours(
-        new Date(result[0].expiration_date).getHours() - 6
-      )
-    );
-
-    if (parsedExpirationDate < new Date()) {
+    
+    if (user.recoveryCode.expirationDate < new Date()) {
       res
         .status(401)
         .send(
@@ -125,16 +129,15 @@ exports.resetPassword = async (req, res) => {
         );
       return;
     }
-    const userCode = result[0];
 
-    const updatePasswordSQL = `UPDATE test.Users
-        SET password='${await bcrypt.hash(userPayload.password, saltRounds)}'
-        WHERE id=${userCode.id};`;
+    user.password = await bcrypt.hash(userPayload.password, saltRounds);
+    user.save();
 
-    await query(updatePasswordSQL);
-
-    const deleteCodeSQL = `DELETE FROM test.Users_Recovery_Codes WHERE user_id=${userCode.id};`;
-    await query(deleteCodeSQL);
+    await db.UserRecoveryCode.destroy({
+      where: {
+        userId: user.id,
+      },
+    });
 
     res.status(204).send();
   } catch (error) {
@@ -143,8 +146,9 @@ exports.resetPassword = async (req, res) => {
 };
 
 exports.listUsers = async (req, res) => {
+  // #swagger.tags = ['Users']
   try {
-    const result = await db.User.find();
+    const result = await db.User.findAll();
     res.json(result);
   } catch (error) {
     res.status(500).send("Server error: " + error);

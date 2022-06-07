@@ -15,6 +15,9 @@ module.exports = (sequelize, DataTypes) => {
       code: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        validate: {
+          isNumeric: true,
+        }
       },
       expirationDate: {
         type: DataTypes.DATE,

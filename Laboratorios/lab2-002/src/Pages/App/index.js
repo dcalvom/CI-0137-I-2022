@@ -6,6 +6,7 @@ import Spinner from "../../Component/Spinner";
 import { fetchPromo } from "../../Slices/appSlice";
 import Home from "../Home";
 import Login from "../Login";
+import Admin from "../Admin";
 
 function App() {
   const loading = useSelector(
@@ -26,6 +27,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="login" element={<Login />} />
+          <Route path="admin" element={<Admin />} />
         </Routes>
       </BrowserRouter>
     </MainContainer>

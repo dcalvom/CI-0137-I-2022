@@ -5,6 +5,7 @@ const db = require("../models/index");
 const saltRounds = 10;
 
 exports.listUsers = async (req, res) => {
+  // #swagger.tags = ['Users']
   try {
     const users = await db.User.findAll();
     res.json(users);
@@ -18,6 +19,12 @@ exports.listUsers = async (req, res) => {
 };
 
 exports.createUser = async (req, res) => {
+  // #swagger.tags = ['Users']
+  /*  #swagger.parameters['obj'] = {
+          in: 'body',
+          description: 'Add a user',
+          schema: { $ref: '#/definitions/CreateUser' }
+  } */
   try {
     const userPayload = req.body;
     const newUser = await db.User.create({
@@ -39,6 +46,12 @@ exports.createUser = async (req, res) => {
 };
 
 exports.loginUser = async (req, res) => {
+  // #swagger.tags = ['Users']
+  /*  #swagger.parameters['obj'] = {
+          in: 'body',
+          description: 'Add a user',
+          schema: { $ref: '#/definitions/LoginUser' }
+  } */
   try {
     const userPayload = req.body;
     const user = await db.User.findOne({ where: { email : userPayload.email } });
@@ -68,6 +81,12 @@ exports.loginUser = async (req, res) => {
 };
 
 exports.recoverPassword = async (req, res) => {
+  // #swagger.tags = ['Users']
+  /*  #swagger.parameters['obj'] = {
+          in: 'body',
+          description: 'Add a user',
+          schema: { $ref: '#/definitions/RecoverPassword' }
+  } */
   try {
     const userPayload = req.body;
     const user = await db.User.findOne({ where: { email : userPayload.email } });
@@ -99,6 +118,12 @@ exports.recoverPassword = async (req, res) => {
 };
 
 exports.resetPassword = async (req, res) => {
+  // #swagger.tags = ['Users']
+  /*  #swagger.parameters['obj'] = {
+          in: 'body',
+          description: 'Add a user',
+          schema: { $ref: '#/definitions/ResetPassword' }
+  } */
   try {
     const userPayload = req.body;
     const user = await db.User.findOne({

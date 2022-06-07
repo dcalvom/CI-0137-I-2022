@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const db = require("../models/index");
 
 exports.checkUserIsAuthenticated = async (req, res, next) => {
     let token;
@@ -13,10 +14,8 @@ exports.checkUserIsAuthenticated = async (req, res, next) => {
         else {
             try {
                 const decodedToken = jwt.verify(token, process.env.JWT_KEY);
-                const sqlQuery = `SELECT * FROM test.Users WHERE id = '${decodedToken.userId}';`;
-                const query = getQuery();
-                const result = await query(sqlQuery);
-                if (!result[0]) {
+                const user = db.User.findByPk(decodedToken.userId);
+                if (!user) {
                     res.status(401).json({
                         error: true,
                         message: "El usuario no está autenticado",

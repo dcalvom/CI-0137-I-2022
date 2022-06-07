@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Lab CI0137 - API",
-    "description": "Este es el API del laboratorio de backend del curso CI0137",
+    "description": "Este es el API del laboratorio de backend del curso de CI0137",
     "version": "1.0.0"
   },
   "host": "localhost:7500",
@@ -29,9 +29,6 @@
           "200": {
             "description": "OK"
           },
-          "400": {
-            "description": "Bad Request"
-          },
           "401": {
             "description": "Unauthorized"
           },
@@ -51,7 +48,7 @@
             "in": "body",
             "description": "Add a user",
             "schema": {
-              "$ref": "#/definitions/CreateUser"
+              "$ref": "#/definitions/AddUser"
             }
           }
         ],
@@ -76,11 +73,18 @@
         "description": "",
         "parameters": [
           {
-            "name": "obj",
+            "name": "body",
             "in": "body",
-            "description": "Add a user",
             "schema": {
-              "$ref": "#/definitions/LoginUser"
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                }
+              }
             }
           }
         ],
@@ -90,9 +94,6 @@
           },
           "401": {
             "description": "Unauthorized"
-          },
-          "422": {
-            "description": "Unprocessable Entity"
           },
           "500": {
             "description": "Internal Server Error"
@@ -108,23 +109,24 @@
         "description": "",
         "parameters": [
           {
-            "name": "obj",
+            "name": "body",
             "in": "body",
-            "description": "Add a user",
             "schema": {
-              "$ref": "#/definitions/RecoverPassword"
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                }
+              }
             }
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "200": {
+            "description": "OK"
           },
           "401": {
             "description": "Unauthorized"
-          },
-          "422": {
-            "description": "Unprocessable Entity"
           },
           "500": {
             "description": "Internal Server Error"
@@ -140,11 +142,21 @@
         "description": "",
         "parameters": [
           {
-            "name": "obj",
+            "name": "body",
             "in": "body",
-            "description": "Add a user",
             "schema": {
-              "$ref": "#/definitions/ResetPassword"
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                },
+                "code": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                }
+              }
             }
           }
         ],
@@ -166,22 +178,22 @@
     }
   },
   "definitions": {
-    "CreateUser": {
+    "AddUser": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
-          "example": "José Rodríguez Pérez"
+          "example": "CI0137"
         },
         "email": {
           "type": "string",
-          "example": "jose@correo.com"
+          "example": "cloud@polpocr.com"
         },
         "password": {
           "type": "string",
           "example": "patito"
         },
-        "countryCode": {
+        "phoneCountryCode": {
           "type": "number",
           "example": 506
         },
@@ -189,48 +201,9 @@
           "type": "number",
           "example": 70155104
         },
-        "birthday": {
+        "birthdate": {
           "type": "string",
           "example": "1989-10-16"
-        }
-      }
-    },
-    "LoginUser": {
-      "type": "object",
-      "properties": {
-        "email": {
-          "type": "string",
-          "example": "jose@correo.com"
-        },
-        "password": {
-          "type": "string",
-          "example": "patito"
-        }
-      }
-    },
-    "RecoverPassword": {
-      "type": "object",
-      "properties": {
-        "email": {
-          "type": "string",
-          "example": "jose@correo.com"
-        }
-      }
-    },
-    "ResetPassword": {
-      "type": "object",
-      "properties": {
-        "email": {
-          "type": "string",
-          "example": "jose@correo.com"
-        },
-        "password": {
-          "type": "string",
-          "example": "patito"
-        },
-        "code": {
-          "type": "number",
-          "example": 123456
         }
       }
     }

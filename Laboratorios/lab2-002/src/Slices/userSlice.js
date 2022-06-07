@@ -4,6 +4,7 @@ const userSlice = createSlice({
     name: 'user',
     initialState: {
         user: null,
+        users: [],
         isLoggedIn: false,
     },
     reducers: {
@@ -28,13 +29,24 @@ const userSlice = createSlice({
                 state.userIsLoggedIn = false;
                 state.user = null;
             })
+            .addCase(getAllUsers.fulfilled, (state, action) => {
+                if (action.payload.error) {
+                    state.users = [];
+                    state.errorMessage = action.payload.message;
+                } else {
+                    state.users = action.payload;
+                }
+            })
+            .addCase(getAllUsers.rejected, (state) => {
+                state.users = [];
+            })
     }
 });
 
 export const { logout } = userSlice.actions;
 
 export const postLogin = createAsyncThunk('usuarios/postLogin', async (credentials) => {
-    const loginFetch = await fetch('https://api.ticolitas.com/usuarios/login', {
+    const loginFetch = await fetch('http://localhost:7500/users/login', {
         method: 'POST',
         headers: {
             "Content-type": "application/json",
@@ -51,6 +63,25 @@ export const postLogin = createAsyncThunk('usuarios/postLogin', async (credentia
         return {
             error: true,
             message: userData.error.message,
+        }
+    }
+});
+
+export const getAllUsers = createAsyncThunk('usuarios/getAllUsers', async (params, { getState }) => {
+    const state = getState();
+    console.log(state);
+    const usersFetch = await fetch('http://localhost:7500/users', {
+        headers: {
+            Authorization: `Bearer ${state.user.user.token}`
+        }
+    });
+    const usersData = await usersFetch.json();
+    if (usersFetch.status === 200) {
+        return usersData;
+    } else {
+        return {
+            error: true,
+            message: usersData.error.message,
         }
     }
 });
