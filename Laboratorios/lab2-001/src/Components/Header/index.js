@@ -36,7 +36,7 @@ export default function Header({
                                         <>
                                             <div className="pt-2 pl-4">
                                                 <p className="text-white cursor-pointer">
-                                                    <Link to="/login">Hola, {userState.user.nombre}</Link>
+                                                    <Link to="/login">Hola, {userState.user.name}</Link>
                                                 </p>
                                             </div>
                                             <div className="pt-2 pl-4">

@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const postLogin = createAsyncThunk('usuarios/postLogin', async (credentials) => {
-    const loginFetch = await fetch('http://localhost:3001/usuarios/login', {
+    const loginFetch = await fetch('http://localhost:7500/users/login', {
         method: 'POST',
         headers: {
             "Content-type": "application/json",

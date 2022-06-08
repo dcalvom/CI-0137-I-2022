@@ -6,6 +6,7 @@ import Login from "../Login";
 import Register from "../Register";
 import Admin from "../Admin";
 import Unathorized from "../Unathorized";
+import { ROLES } from "../../utils/constants";
 
 export default function App() {
   return (
@@ -16,7 +17,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="register" element={<Register />} />
           <Route path="/no-autorizado" element={<Unathorized />} />
-          <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
+          <Route element={<PrivateRoute allowedRoles={[ROLES.ADMIN]} />}>
             <Route path="/admin" element={<Admin />} />
           </Route>
         </Routes>

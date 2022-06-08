@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import themes from "../../utils/themes";
+import { getUsers } from "../user/requests/getUsers";
 import { postLogin } from "../user/requests/postLogin";
 
 const appSlice = createSlice({
@@ -29,6 +30,15 @@ const appSlice = createSlice({
                 state.loading = false;
             })
             .addCase(postLogin.rejected, (state) => {
+                state.loading = false;
+            })
+            .addCase(getUsers.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(getUsers.fulfilled, (state, action) => {
+                state.loading = false;
+            })
+            .addCase(getUsers.rejected, (state) => {
                 state.loading = false;
             })
     }

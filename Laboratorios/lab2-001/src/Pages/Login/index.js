@@ -6,6 +6,7 @@ import { postLogin } from "../../Slices/user/requests/postLogin";
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [localErrorMessage, setLocalErrorMessage] = useState("");
 
   const theme = useSelector((state) => state.app.theme);
   const userIsLoggedIn = useSelector((state) => state.user.userIsLoggedIn);
@@ -43,15 +44,27 @@ export default function Login() {
           />
         </div>
         {errorMessage && <span className="text-red-500">{errorMessage}</span>}
+        {localErrorMessage && <span className="text-red-500">{localErrorMessage}</span>}
         <button
           className="h-[48px] w-full rounded-md bg-sky-500 text-white"
           onClick={() => {
-            dispatch(
-              postLogin({
-                username,
-                password,
-              })
-            );
+            if (username && password) {
+              if (password.length < 8) {
+                setLocalErrorMessage("La contraseña debe contener al menos 8 dígitos.");                
+              }
+              else {
+                setLocalErrorMessage("");
+                dispatch(
+                  postLogin({
+                    username,
+                    password,
+                  })
+                );
+              }
+            }
+            else {
+              setLocalErrorMessage("Debe completar todos los campos");
+            }
           }}
         >
           Iniciar Sesión
