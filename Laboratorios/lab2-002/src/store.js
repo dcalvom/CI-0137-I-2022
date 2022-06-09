@@ -4,11 +4,13 @@ import { persistReducer } from "redux-persist";
 import appSlice from "./Slices/appSlice";
 import cartSlice from "./Slices/cartSlice";
 import userSlice from "./Slices/userSlice";
+import productSlice from "./Slices/productSlice";
 
 const reducers = combineReducers({
   app: appSlice,
   user: userSlice,
   cart: cartSlice,
+  product: productSlice,
 });
 
 const rootPersistConfig = {

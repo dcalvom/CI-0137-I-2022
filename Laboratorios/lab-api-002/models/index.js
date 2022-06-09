@@ -1,12 +1,9 @@
-const dotenv = require("dotenv");
 const Sequelize = require("sequelize");
 const UserModel = require("./user");
 const RoleModel = require("./role");
 const UserRoleModel = require("./userRole");
 const UserRecoveryCodeModel = require("./userRecoveryCode");
 const db = {};
-
-dotenv.config();
 
 const sequelize = new Sequelize(
   process.env.MYSQL_DATABASE,

@@ -17,6 +17,12 @@ const doc = {
       phone: 70155104,
       birthdate: "1989-10-16",
     },
+    AddProduct: {
+      name: "Nombre del producto",
+      price: 9999,
+      description: "Lorem ipsum kljdsf adsf asf adsf",
+      picture: "https://domain.com/picture.jpg",
+    },
   },
 };
 

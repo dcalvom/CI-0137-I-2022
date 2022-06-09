@@ -12,6 +12,17 @@
     "https"
   ],
   "paths": {
+    "/upload": {
+      "post": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/users/": {
       "get": {
         "tags": [
@@ -175,6 +186,35 @@
           }
         }
       }
+    },
+    "/products/": {
+      "post": {
+        "tags": [
+          "Product"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "Create a product",
+            "schema": {
+              "$ref": "#/definitions/AddProduct"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -204,6 +244,27 @@
         "birthdate": {
           "type": "string",
           "example": "1989-10-16"
+        }
+      }
+    },
+    "AddProduct": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "Nombre del producto"
+        },
+        "price": {
+          "type": "number",
+          "example": 9999
+        },
+        "description": {
+          "type": "string",
+          "example": "Lorem ipsum kljdsf adsf asf adsf"
+        },
+        "picture": {
+          "type": "string",
+          "example": "https://domain.com/picture.jpg"
         }
       }
     }

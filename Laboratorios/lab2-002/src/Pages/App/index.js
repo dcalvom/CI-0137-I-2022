@@ -7,6 +7,7 @@ import { fetchPromo } from "../../Slices/appSlice";
 import Home from "../Home";
 import Login from "../Login";
 import Admin from "../Admin";
+import ProductsAdmin from "../ProductsAdmin";
 
 function App() {
   const loading = useSelector(
@@ -28,6 +29,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="login" element={<Login />} />
           <Route path="admin" element={<Admin />} />
+          <Route path="/admin/products" element={<ProductsAdmin />} />
         </Routes>
       </BrowserRouter>
     </MainContainer>

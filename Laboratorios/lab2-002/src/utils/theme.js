@@ -4,6 +4,8 @@ const themes = {
         background: "bg-white",
         text: "text-black",
         header: "bg-purple-600",
+        buttonBg: "bg-purple-600",
+        buttonText: "text-white",
         priceTag: "text-yellow-500",
         productBorder: "border-neutral-400",
         inputBg: "bg-slate-300",

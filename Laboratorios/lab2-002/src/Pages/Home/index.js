@@ -7,7 +7,7 @@ const products = [
     id: 1,
     name: "Patrón Duendecillo Repartidor",
     image:
-      "https://duendedeloshilos.es/wp-content/uploads/2019/03/amigurumi-patron-mu%C3%B1eco-2-350x400.jpg",
+      "https://ci0137.s3.amazonaws.com/amigurumis/products/1.jpg",
     price: 7.26,
   },
   {
