@@ -8,7 +8,7 @@ export default function Header({
     welcomeText,
 }) {
 
-    const [showUserMenu, setShowUserMenu] = useState(true);
+    const [showUserMenu, setShowUserMenu] = useState(false);
     const theme = useSelector(
         (state) => state.app.theme
     );

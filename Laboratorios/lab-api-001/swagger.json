@@ -163,6 +163,46 @@
           }
         }
       }
+    },
+    "/items/": {
+      "post": {
+        "tags": [
+          "Items"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "Add an item",
+            "schema": {
+              "$ref": "#/definitions/CreateItem"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/upload/": {
+      "post": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -231,6 +271,35 @@
         "code": {
           "type": "number",
           "example": 123456
+        }
+      }
+    },
+    "CreateItem": {
+      "type": "object",
+      "properties": {
+        "nombre": {
+          "type": "string",
+          "example": "Reloj de vestir"
+        },
+        "descripcion": {
+          "type": "string",
+          "example": "Este es un fino reloj del 2017"
+        },
+        "categoria": {
+          "type": "number",
+          "example": 2
+        },
+        "condicion": {
+          "type": "number",
+          "example": 2
+        },
+        "provincia": {
+          "type": "number",
+          "example": 1
+        },
+        "foto": {
+          "type": "string",
+          "example": "https://ejemplo.com/foto.jpg"
         }
       }
     }

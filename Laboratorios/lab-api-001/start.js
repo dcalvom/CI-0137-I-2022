@@ -28,6 +28,14 @@ const doc = {
       password: "patito",
       code: 123456,
     },
+    CreateItem: {
+      nombre: "Reloj de vestir",
+      descripcion: "Este es un fino reloj del 2017",
+      categoria: 2,
+      condicion: 2,
+      provincia: 1,
+      foto: "https://ejemplo.com/foto.jpg",
+    },
   },
 };
 

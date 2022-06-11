@@ -5,6 +5,7 @@ import Home from "../Home";
 import Login from "../Login";
 import Register from "../Register";
 import Admin from "../Admin";
+import NewProduct from "../NewProduct/NewProduct";
 import Unathorized from "../Unathorized";
 import { ROLES } from "../../utils/constants";
 
@@ -20,6 +21,7 @@ export default function App() {
           <Route element={<PrivateRoute allowedRoles={[ROLES.ADMIN]} />}>
             <Route path="/admin" element={<Admin />} />
           </Route>
+          <Route path="/admin/products/new" element={<NewProduct />} />
         </Routes>
       </BrowserRouter>
     </MainContainer>
