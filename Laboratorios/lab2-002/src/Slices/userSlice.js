@@ -69,7 +69,6 @@ export const postLogin = createAsyncThunk('usuarios/postLogin', async (credentia
 
 export const getAllUsers = createAsyncThunk('usuarios/getAllUsers', async (params, { getState }) => {
     const state = getState();
-    console.log(state);
     const usersFetch = await fetch('http://localhost:7500/users', {
         headers: {
             Authorization: `Bearer ${state.user.user.token}`
