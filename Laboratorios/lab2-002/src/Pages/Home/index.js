@@ -1,13 +1,13 @@
 import Header from "../../Component/Header";
 import { useDispatch, useSelector } from "react-redux";
 import { addItem } from "../../Slices/cartSlice";
+import Mixpanel from "../../services/mixpanel";
 
 const products = [
   {
     id: 1,
     name: "Patrón Duendecillo Repartidor",
-    image:
-      "https://ci0137.s3.amazonaws.com/amigurumis/products/1.jpg",
+    image: "https://ci0137.s3.amazonaws.com/amigurumis/products/1.jpg",
     price: 7.26,
   },
   {
@@ -34,10 +34,7 @@ const products = [
 ];
 
 function Home() {
-
-  const theme = useSelector(
-    (state) => state.app.theme
-  );
+  const theme = useSelector((state) => state.app.theme);
 
   const dispatch = useDispatch();
 
@@ -47,14 +44,29 @@ function Home() {
       <div className="flex gap-4 px-4 md:px-8 lg:px-20 py-4">
         {products.map((p) => {
           return (
-            <div key={`product_${p.id}`} className={`border ${theme.productBorder}`}>
+            <div
+              key={`product_${p.id}`}
+              className={`border ${theme.productBorder}`}
+            >
               <div>
                 <img src={p.image} alt={p.name} />
               </div>
               <div className="p-4 text-center">
                 <p>{p.name}</p>
                 <p className={`${theme.priceTag}`}>€{p.price}</p>
-                <button onClick={() => { dispatch(addItem()) }}>Agregar al carrito</button>
+                <button
+                  onClick={() => {
+                    Mixpanel.track(Mixpanel.TYPES.ADD_TO_CART, {
+                      productId: p.id,
+                      productName: p.name,
+                      productImage: p.image,
+                      productPrice: p.price,
+                    });
+                    dispatch(addItem());
+                  }}
+                >
+                  Agregar al carrito
+                </button>
               </div>
             </div>
           );

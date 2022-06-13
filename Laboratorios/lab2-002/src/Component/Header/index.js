@@ -5,9 +5,11 @@ import Logo from "../Logo";
 import Modal from "../Modal";
 import { toLight, toDark } from "../../Slices/appSlice";
 import { Link } from "react-router-dom";
+import Mixpanel from "../../services/mixpanel";
 
 function Header() {
   const [showSearch, setShowSearch] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
   
   const dispatch = useDispatch();
 
@@ -36,10 +38,16 @@ function Header() {
           {/*todo lo que venga aqui es el children*/}
           <div className="w-full text-center">
             <input
+              value={searchValue}
+              onChange={(evt) => { setSearchValue(evt.target.value); }}
               className="placeholder:text-white pl-4 w-full h-12 border-none bg-red-200 mb-4"
               placeholder="Buscar..."
             />
-            <button className="bg-white border-4 border-yellow-500 px-8 py-2">
+            <button onClick={() => {
+              Mixpanel.track(Mixpanel.TYPES.SEARCH_ON_MODAL, {
+                searchValue,
+              });
+            }} className="bg-white border-4 border-yellow-500 px-8 py-2">
               Buscar
             </button>
           </div>
@@ -58,17 +66,21 @@ function Header() {
           <p>{user && user.name ? ` ¡Bienvenido ${user.name}!` : "¡Bienvenido!"}</p>
           <BiSearch
             onClick={() => {
+              Mixpanel.track(Mixpanel.TYPES.OPEN_SEARCH_MODAL);
               setShowSearch(true);
             }}
             className="cursor-pointer text-2xl"
           />
-          <Link to="/admin">
+          <Link onClick={() => { Mixpanel.track(Mixpanel.TYPES.GO_TO_ACCOUNT); }} to="/admin">
             <BiUser className="cursor-pointer text-2xl" />
           </Link>
-          <BiCart className="cursor-pointer text-2xl" />
+          <BiCart onClick={() => { Mixpanel.track(Mixpanel.TYPES.GO_TO_CART); }} className="cursor-pointer text-2xl" />
           <span>{countOfItems}</span>
           <BiMoon
             onClick={() => {
+              Mixpanel.track(Mixpanel.TYPES.TOGGLE_DARK_MODE, {
+                currentTheme: theme.name,
+              });
               theme.name === "light" ? dispatch(toDark()) : dispatch(toLight());
             }}
             className="cursor-pointer text-2xl"
