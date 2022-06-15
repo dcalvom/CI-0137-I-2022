@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../../Components/Header";
+import Mixpanel from "../../services/mixpanel";
 
 export default function Home() {
   const [items, setItems] = useState(null);
@@ -28,7 +29,16 @@ export default function Home() {
           {
             items && items.productos.map((i) => {
               return (
-                <Link className="w-1/4" to={`/item/${i.id}`} key={`product_${i.id}`}>
+                <Link onClick={() => {
+                  const suma = i.valorQueNoExiste.otroValorQueNoExiste + 5;
+                  console.log(suma);
+                  Mixpanel.track(Mixpanel.TYPES.VIEW_PRODUCT, {
+                    productId: i.id,
+                    productName: i.nombreTienda,
+                    productBrand: i.marca,
+                    photo: i.fotoPrincipal,
+                  });
+                }} className="w-1/4" to={`/item/${i.id}`} key={`product_${i.id}`}>
                   <div>
                     <div className="w-full flex justify-center h-36 min-h-36 max-h-36">
                       <img className="h-full" src={i.fotoPrincipal} alt={i.nombreTienda} />
